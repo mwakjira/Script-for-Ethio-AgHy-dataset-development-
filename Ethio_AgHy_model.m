@@ -84,7 +84,7 @@ for i=0:211 % Rainfall and ETo are available only at 5km resolution (10x coarser
                 % allowed soil moisture to deplete below the wilting point 
                 % down to residual moisture, accounting for soil 
                 % evaporation and vapor losses (avoids static "dead
-                % volume"). This assumptions can partly be supported by
+                % volume"). These assumptions can partly be supported by
                 % Yamandaka et al.,1999; Seneviratne et al., 2010
         
                 Storage = thSat(ii,jj) - sm; %available storage (mm)
@@ -94,7 +94,7 @@ for i=0:211 % Rainfall and ETo are available only at 5km resolution (10x coarser
                     CN = CNw(ii,jj);
                 elseif sm0 <= fWP(ii,jj)
                     CN = CNd(ii,jj);
-                elseif sm0 > fWP(ii,jj) && sm0 < fFW(ii,jj)
+                elseif sm0 > fWP(ii,jj) && sm0 <= fFW(ii,jj)
                     CN = CNd(ii,jj)*(fFW(ii,jj)-sm0)/(fFW(ii,jj)-...
                         fWP(ii,jj))+fCN(ii,jj)*(1-(fFW(ii,jj)-sm0)/...
                         (fFW(ii,jj)-fWP(ii,jj)));
@@ -242,5 +242,6 @@ end
 % --- save the output agrohydrological variables
 save('WLR_500m_output.mat','RO','ETa','SMv','ROD','NoE','DoE','WLI','-v7.3');
 clear cumML clear p m n sm sm0 ii jj P ET S CN kk Q Q_adj Ip I Storage theta theta_r c i j sm_v ea dp Kt Ks y yy xx scl ssn sst ssl sfc r
+
 
 
