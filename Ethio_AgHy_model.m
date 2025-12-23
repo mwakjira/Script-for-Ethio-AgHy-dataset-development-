@@ -84,7 +84,7 @@ for i=0:211 % Rainfall and ETo are available only at 5km resolution (10x coarser
                 % moisture was allowed to deplete below the wilting point 
                 % down to residual moisture, accounting for soil 
                 % evaporation and vapor losses (avoids static "dead
-                % volume"). This assumption follows the fact that soil drying 
+                % volume"). This assumption follows the fact that soil drying (evaporation)
                 % continues (Seneviratne et al., 2010) beyond WP although this is 
                 % process has no biological significance plant uptake. It also follows the 
                 % widely used soil moisture parameterization of soil water content 
@@ -145,12 +145,12 @@ for i=0:211 % Rainfall and ETo are available only at 5km resolution (10x coarser
                 theta = sm/(1000*Zr); % sm in mm
                 if theta < 0.5*fWP(ii,jj) 
                     Ks = 0;
-                    % The use of 0.5*WP follows the above assumption regarding soil drying
+                    % The use of 0.5*WP follows the above assumption regarding soil drying.
                     % Transpiration stops at WP but drying continues (Seneviratne et al., 2010). 
-                    % We partly account for the water-filled pore dynamics due to extreme drying 
-                    % by assuming 0.5*WP as the lowest margin. Users are advised to be cautious 
-                    % about this assumption -- by making assumption that fits their context, or 
-                    % by introducing a parameter that allows optimization of the margin 
+                    % We partly represent the water-filled pore dynamics due to extreme drying 
+                    % by assuming 0.5*WP as the lowest margin. This reflects extreme dry-end 
+                    % conditions and users may adjust or introduce a parameter to calibrate it
+                    % depending on application. 
                 elseif sm <= f*(thFC(ii,jj) - thWP(ii,jj))
                     Ks = sm/(f*(thFC(ii,jj) - thWP(ii,jj)));
                 else
@@ -252,6 +252,7 @@ end
 % --- save the output agrohydrological variables
 save('WLR_500m_output.mat','RO','ETa','SMv','ROD','NoE','DoE','WLI','-v7.3');
 clear cumML clear p m n sm sm0 ii jj P ET S CN kk Q Q_adj Ip I Storage theta theta_r c i j sm_v ea dp Kt Ks y yy xx scl ssn sst ssl sfc r
+
 
 
 
