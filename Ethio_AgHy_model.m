@@ -80,12 +80,16 @@ for i=0:211 % Rainfall and ETo are available only at 5km resolution (10x coarser
             sm0 = 1.2*fWP(ii,jj); % We set an arbitrary initial condition 
            
             for k=1:12052 % out of which 1138 days are stablization period
-                sm = 1000*Zr*(sm0-thRes(ii,jj)); % soil moisture in mm. We 
-                % allowed soil moisture to deplete below the wilting point 
+                sm = 1000*Zr*(sm0-thRes(ii,jj)); % soil moisture in mm. Soil 
+                % moisture was allowed to deplete below the wilting point 
                 % down to residual moisture, accounting for soil 
                 % evaporation and vapor losses (avoids static "dead
-                % volume"). These assumptions can partly be supported by
-                % Yamandaka et al.,1999; Seneviratne et al., 2010
+                % volume"). This assumption follows the fact that soil drying 
+                % continues (Seneviratne et al., 2010) beyond WP although this is 
+                % process has no biological significance plant uptake. It also follows the 
+                % widely used soil moisture parameterization of soil water content 
+                % by van Genuchten (1980), which allows soil water content to smoothly 
+                % toward residual moisture content without cutoff at WP.
         
                 Storage = thSat(ii,jj) - sm; %available storage (mm)
 
@@ -139,8 +143,14 @@ for i=0:211 % Rainfall and ETo are available only at 5km resolution (10x coarser
 
                 % --- calculate water stress coefficient Ks [-] and ETa ---
                 theta = sm/(1000*Zr); % sm in mm
-                if theta < 0.5*fWP(ii,jj)
+                if theta < 0.5*fWP(ii,jj) 
                     Ks = 0;
+                    % The use of 0.5*WP follows the above assumption regarding soil drying
+                    % Transpiration stops at WP but drying continues (Seneviratne et al., 2010). 
+                    % We partly account for the water-filled pore dynamics due to extreme drying 
+                    % by assuming 0.5*WP as the lowest margin. Users are advised to be cautious 
+                    % about this assumption -- by making assumption that fits their context, or 
+                    % by introducing a parameter that allows optimization of the margin 
                 elseif sm <= f*(thFC(ii,jj) - thWP(ii,jj))
                     Ks = sm/(f*(thFC(ii,jj) - thWP(ii,jj)));
                 else
@@ -242,6 +252,7 @@ end
 % --- save the output agrohydrological variables
 save('WLR_500m_output.mat','RO','ETa','SMv','ROD','NoE','DoE','WLI','-v7.3');
 clear cumML clear p m n sm sm0 ii jj P ET S CN kk Q Q_adj Ip I Storage theta theta_r c i j sm_v ea dp Kt Ks y yy xx scl ssn sst ssl sfc r
+
 
 
 
